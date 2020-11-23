@@ -124,7 +124,6 @@ __all__ = (
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.lang import Builder
-from kivy.metrics import dp
 from kivy.properties import (
     BooleanProperty,
     ListProperty,
@@ -145,8 +144,8 @@ Builder.load_string(
     canvas:
         Color:
             rgba:
-                root.theme_cls.primary_color if not root.background_color \
-                else root.background_color
+                root.theme_cls.primary_color if not root.back_layer_color \
+                else root.back_layer_color
         Rectangle:
             pos: self.pos
             size: self.size
@@ -156,8 +155,8 @@ Builder.load_string(
         title: root.title
         elevation: 0
         md_bg_color:
-            root.theme_cls.primary_color if not root.background_color \
-            else root.background_color
+            root.theme_cls.primary_color if not root.back_layer_color \
+            else root.back_layer_color
         left_action_items: root.left_action_items
         right_action_items: root.right_action_items
         pos_hint: {'top': 1}
@@ -177,7 +176,9 @@ Builder.load_string(
 
         canvas:
             Color:
-                rgba: root.theme_cls.bg_normal
+                rgba:
+                    root.theme_cls.bg_normal if not root.front_layer_color \
+                    else root.front_layer_color
             RoundedRectangle:
                 pos: self.pos
                 size: self.size
@@ -242,10 +243,17 @@ class MDBackdrop(ThemableBehavior, FloatLayout):
     and defaults to `''`.
     """
 
-    background_color = ListProperty()
+    back_layer_color = ListProperty()
     """Background color of back layer.
 
-    :attr:`background_color` is an :class:`~kivy.properties.ListProperty`
+    :attr:`back_layer_color` is an :class:`~kivy.properties.ListProperty`
+    and defaults to `[]`.
+    """
+
+    front_layer_color = ListProperty()
+    """Background color of front layer.
+
+    :attr:`front_layer_color` is an :class:`~kivy.properties.ListProperty`
     and defaults to `[]`.
     """
 
@@ -328,10 +336,19 @@ class MDBackdrop(ThemableBehavior, FloatLayout):
         if self._front_layer_open:
             self.close()
             return
+
         if open_up_to:
-            y = open_up_to
+            if open_up_to < (
+                self.ids.header_button.height - self.ids._front_layer.height
+            ):
+                y = self.ids.header_button.height - self.ids._front_layer.height
+            elif open_up_to > 0:
+                y = 0
+            else:
+                y = open_up_to
         else:
-            y = dp(120) - self.height
+            y = self.ids.header_button.height - self.ids._front_layer.height
+
         Animation(y=y, d=0.2, t="out_quad").start(self.ids._front_layer)
         self._front_layer_open = True
         self.dispatch("on_open")

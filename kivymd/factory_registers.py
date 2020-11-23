@@ -5,6 +5,8 @@ Register KivyMD widgets to use without import
 from kivy.factory import Factory
 
 r = Factory.register
+r("MDNavigationRail", module="kivymd.uix.navigationrail")
+r("MDSwiper", module="kivymd.uix.swiper")
 r("MDCarousel", module="kivymd.uix.carousel")
 r("MDFloatLayout", module="kivymd.uix.floatlayout")
 r("MDScreen", module="kivymd.uix.screen")
@@ -28,6 +30,7 @@ r("MDTab", module="kivymd.uix.bottomnavigation")
 r("MDBottomSheet", module="kivymd.uix.bottomsheet")
 r("MDListBottomSheet", module="kivymd.uix.bottomsheet")
 r("MDGridBottomSheet", module="kivymd.uix.bottomsheet")
+r("MDToggleButton", module="kivymd.uix.behaviors.toggle_behavior")
 r("MDFloatingActionButtonSpeedDial", module="kivymd.uix.button")
 r("MDIconButton", module="kivymd.uix.button")
 r("MDRoundImageButton", module="kivymd.uix.button")
